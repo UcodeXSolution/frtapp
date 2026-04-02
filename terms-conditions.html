@@ -189,8 +189,8 @@
         }
         
         .store-btn {
-            background-color: #111111;
-            color: #FFFFFF;
+            background-color: var(--gray);
+            color: var(--light);
             padding: 0.8rem 1.5rem;
             border-radius: 12px;
             text-decoration: none;
@@ -728,7 +728,7 @@
         /* Animations */
         
         .fade-in {
-            opacity: 1;
+            opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
@@ -739,7 +739,7 @@
         }
         
         .slide-in-left {
-            opacity: 1;
+            opacity: 0;
             transform: translateX(-50px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
@@ -750,7 +750,7 @@
         }
         
         .slide-in-right {
-            opacity: 1;
+            opacity: 0;
             transform: translateX(50px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
@@ -968,336 +968,33 @@
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="nav-links" id="navLinks">
-            <a href="#features">Features</a>
-            <a href="#app-demo">App Demo</a>
-            <a href="#testimonials">Testimonials</a>
-            <a href="#download" class="download-btn pulse"><i class="fas fa-download"></i> Download</a>
-
-        </div>
+        <div class="nav-links" id="navLinks"><a href="index.html" class="download-btn"><i class="fas fa-arrow-left"></i> Back to Home</a></div>
     </nav>
 
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navToggle = document.getElementById('navToggle');
-            const navLinks = document.getElementById('navLinks');
-            
-            // Toggle menu visibility
-            navToggle.addEventListener('click', function() {
-                navLinks.classList.toggle('active');
-                
-                // Change icon between bars and times
-                const icon = this.querySelector('i');
-                if (navLinks.classList.contains('active')) {
-                    icon.classList.replace('fa-bars', 'fa-times');
-                } else {
-                    icon.classList.replace('fa-times', 'fa-bars');
-                }
-            });
-
-            // Close menu when a link is clicked (for mobile)
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        navLinks.classList.remove('active');
-                        navToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                    }
-                });
-            });
-
-            // Close menu when clicking outside (optional)
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('#navbar') && window.innerWidth <= 768) {
-                    navLinks.classList.remove('active');
-                    navToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                }
-            });
-        });
-    </script>
-
-    <!-- Hero Section -->
-    <br>
-    <section class="hero">
-        <div class="hero-content fade-in">
-            <h1 id="hero-title">Keep Your Family Connected & Safe</h1>
-            <p id="hero-text">FRT is the ultimate family tracking app that helps you stay connected with your loved ones. Real-time location sharing, emergency calls, and more - all in one beautiful app.</p>
-            <div class="store-buttons">
-                <a href=" " class="store-btn" download="FRT.apk">
-    <i class="fab fa-android"></i>
-    <div>
-        <span>GET IT ON</span>
-        <strong>APK</strong>
-    </div>
-</a>
-
-<a href=" " class="store-btn" download="FRT.ipa">
-    <i class="fab fa-apple"></i>
-    <div>
-        <span>GET IT ON</span>
-        <strong>IOS</strong>
-    </div>
-</a>
-
-                <a href="#" class="store-btn">
-                    <i class="fa fa-download" aria-hidden="true"></i>
-                    <div>
-                        <strong>10K+</strong><br>
-                        <strong>Downloads</strong>
-                    </div>
-                </a>
-
-            </div>
-        </div>
-        <img src="./images/new.png" alt="FRT App Preview" class="hero-image fade-in">
-    </section>
-
-    <style>
-
     
-        /* Scroll Arrows */
-        
-
-    
-        /* Smart Scroll Button */
-        .smart-scroll-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            border: 2px solid var(--secondary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .smart-scroll-btn:hover {
-            background-color: var(--secondary);
-            color: black;
-            transform: translateY(-5px);
-        }
-        
-        .smart-scroll-btn i.fa-mouse {
-            font-size: 0.8rem;
-            margin-bottom: 2px;
-        }
-        
-        .smart-scroll-btn i.fa-chevron-down, .smart-scroll-btn i.fa-chevron-up {
-            font-size: 1rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-5px);}
-            60% {transform: translateY(-3px);}
-        }
-
-    </style>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const titleElement = document.getElementById("hero-title");
-            const textElement = document.getElementById("hero-text");
-            const titleText = titleElement.textContent;
-            const descriptionText = textElement.textContent;
-
-            // Clear the text initially
-            titleElement.textContent = "";
-            textElement.textContent = "";
-
-            // Function to type text
-            function typeText(element, text, speed, callback) {
-                let i = 0;
-                element.classList.add("typing");
-
-                function type() {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
-                    } else {
-                        element.classList.remove("typing");
-                        element.style.borderRight = "none"; // Remove cursor
-                        if (callback) callback();
-                    }
-                }
-                type();
-            }
-
-            // Start typing the title, then the description
-            typeText(titleElement, titleText, 100, function() {
-                typeText(textElement, descriptionText, 50);
-            });
-        });
-    </script>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title fade-in">Powerful Features</h2>
-        <p class="section-subtitle fade-in">Everything you need to keep your family safe and connected</p>
-
-        <div class="features-grid">
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <h3>Real-time Location</h3>
-                <p>See your family members' locations in real-time with high accuracy and minimal battery drain.</p>
-            </div>
-
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-phone"></i>
-                </div>
-                <h3>Calling Option</h3>
-                <p>One-tap emergency alerts send your location to all family members when you need help.</p>
-            </div>
+    <div style="padding: 150px 5% 50px; background-color: var(--dark); color: var(--light); min-height: 80vh;">
+        <h1 style="color: var(--primary); margin-bottom: 2rem; text-align: center; font-size: 2.5rem;">Business Terms & Conditions</h1>
+        <div style="max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; color: var(--text-light);">
+            <p><strong>Effective Date:</strong> April 2026</p>
+            <p>Welcome to FRT (Family Road Track). These Business Terms & Conditions ("Terms") govern your use of the FRT application and associated services provided by UcodeX Solution. Please read them carefully.</p>
             
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-route"></i>
-                </div>
-                <h3>Journey History</h3>
-                <p>View and share journey histories with family members for added peace of mind.</p>
-            </div>
-
-
-            <div class="feature-card fade-in">
-                <div class="feature-icon">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <h3>Privacy Control</h3>
-                <p>Take control of your privacy with customizable sharing options and scheduled privacy modes.</p>
-            </div>
-           
+            <h3 style="color: var(--light); margin-top: 2rem;">1. Acceptance of Terms</h3>
+            <p>By downloading, installing, or using the FRT application, you agree to be bound by these Terms. If you do not agree, you are restricted from utilizing our services and tracking features.</p>
+            
+            <h3 style="color: var(--light); margin-top: 2rem;">2. Service Provision</h3>
+            <p>FRT provides real-time location sharing, SOS distress calling, and history logging. While we strive to ensure 99.9% uptime, GPS availability, battery constraints, and network coverage may affect software accuracy.</p>
+            
+            <h3 style="color: var(--light); margin-top: 2rem;">3. User Responsibilities & Lawful Use</h3>
+            <p>You agree to use this application legally and exclusively for monitoring authorized family members or individuals who have provided explicit consent. Using FRT for unauthorized tracking, stalking, or harassment is strictly prohibited and will result in immediate termination.</p>
+            
+            <h3 style="color: var(--light); margin-top: 2rem;">4. Premium Accounts</h3>
+            <p>Select features may require a premium digital subscription. Fees for these subscriptions will be clearly communicated prior to purchase. By confirming your subscription, you authorize automated cyclical billing.</p>
+            
+            <h3 style="color: var(--light); margin-top: 2rem;">5. Limitations of Liability</h3>
+            <p>UcodeX Solution and FRT are not liable for any physical or digital damages, losses, or legal ramifications resulting from delayed alerts, application unavailability, or inaccurate tracking locations.</p>
         </div>
-
-    </section>
-
-    <!-- App Demo Section -->
-    <section class="app-demo" id="app-demo">
-        <div class="app-demo-content fade-in">
-            <h2>See FRT in Action</h2>
-            <p>Watch how easy it is to keep track of your loved ones and ensure their safety with our intuitive app interface.</p>
-        </div>
-        <div class="demo-video fade-in">
-            <video controls width="100%">
-            <source src="./images/FRTVid.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        </div>
-    </section>
-
-
-    <!-- Testimonials -->
-    <section class="testimonials" id="testimonials">
-        <h2 class="section-title fade-in">What Families Say</h2>
-        <p class="section-subtitle fade-in">Join thousands of happy families using FRT every day</p>
-
-        <div class="testimonial-slider">
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="./images/profile3.jpeg" alt="Sarah J.">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Sarah J.</h4>
-                        <p>Mother of two</p>
-                    </div>
-                </div>
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"FRT gives me peace of mind knowing where my kids are at all times. The safe zone notifications are a game-changer for our family."</p>
-            </div>
-
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="./images/profile2.jpeg" alt="Michael T.">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Michael T.</h4>
-                        <p>Father of three</p>
-                    </div>
-                </div>
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"The interface is intuitive, battery usage is minimal, and the accuracy is impressive. Best family tracking app I've used by far!"</p>
-            </div>
-
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="./images/profile1.jpeg" alt="Lisa M.">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Lisa M.</h4>
-                        <p>Caregiver</p>
-                    </div>
-                </div>
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"FRT helps me take care of my elderly parents while respecting their independence. The SOS feature gives us all extra security."</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Download Section -->
-    <section class="download" id="download">
-        <h2 class="fade-in">Download FRT Today</h2>
-        <p class="fade-in">Join thousands of families who trust FRT to keep their loved ones safe and connected. Download now and enjoy premium features free for 30 days.</p>
-        <div class="store-buttons fade-in">
-            <a href=" " class="store-btn" download="FRT.apk">
-    <i class="fab fa-android"></i>
-    <div>
-        <span>GET IT ON</span>
-        <strong>APK</strong>
     </div>
-</a>
 
-<a href=" " class="store-btn" download="FRT.ipa">
-    <i class="fab fa-apple"></i>
-    <div>
-        <span>GET IT ON</span>
-        <strong>IOS</strong>
-    </div>
-</a>
-
-            <a href="#" class="store-btn">
-                <i class="fa fa-download" aria-hidden="true"></i>
-                <div>
-                    <strong>10K+</strong><br>
-                    <strong>Downloads</strong>
-                </div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div>
@@ -1332,7 +1029,7 @@
         </div>
 
         <div class="copyright">
-            <p>&copy; 2026 FRT App. All rights reserved.</p>
+            <p>&copy; 2025 FRT App. All rights reserved.</p>
         </div>
     </footer>
 

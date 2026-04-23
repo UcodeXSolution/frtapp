@@ -206,6 +206,31 @@
             }).join('');
         });
 
+        onSnapshot(query(collection(db, "account_deletions"), orderBy("timestamp", "desc")), (snap) => {
+            const list = document.getElementById('cancellations-list');
+            if (snap.empty) {
+                list.innerHTML = `<div class="text-center py-20 text-slate-500">No cancellations yet.</div>`;
+                return;
+            }
+            list.innerHTML = snap.docs.map(d => {
+                const data = d.data();
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleString() : 'N/A';
+                return `<div class="card p-6 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-cyan-400 font-bold">${data.mobile || 'Unknown'}</p>
+                            <p class="text-[10px] text-slate-500">${date}</p>
+                        </div>
+                        <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-1 rounded">DELETED</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-white/5">
+                        <p class="text-xs text-slate-400 mb-1 font-bold uppercase tracking-widest">Reason for leaving:</p>
+                        <p class="text-sm text-slate-200 leading-relaxed italic">"${data.reason || 'No reason provided'}"</p>
+                    </div>
+                </div>`;
+            }).join('');
+        });
+
         window.reviewUser = async (id) => {
             const u = (await getDoc(doc(db, "users", id))).data();
             const modalBody = document.getElementById('modal-body');

@@ -154,6 +154,16 @@
                     if (promoData.isPromoCodeUsed) {
                         return showErr("This Promo Code has already been used");
                     }
+
+                    // CHECK IF OWNER IS EXPIRED
+                    if (promoData.subscriptionExpiry) {
+                        const ownerExpiry = promoData.subscriptionExpiry.toDate();
+                        if (new Date() > ownerExpiry) {
+                            return showErr("The owner of this code has an expired subscription. Code is invalid.");
+                        }
+                    } else if (!promoData.isAppUnlocked) {
+                        return showErr("The owner of this code is not currently active.");
+                    }
                     
                     // Valid!
                     isUnlocked = true;

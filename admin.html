@@ -258,6 +258,7 @@
                 paymentStatus: approved ? 'approved' : 'rejected',
                 subscriptionExpiry: approved ? expiry : null,
                 promoCode: approved ? promo : '',
+                isPromoCodeUsed: false,
                 isFirstLoginAfterApprove: approved
             });
             alert(approved ? "Approved!" : "Rejected.");

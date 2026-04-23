@@ -163,6 +163,7 @@
                         body: formData
                     });
                     const d = await resp.json();
+                    if (!d.secure_url) throw new Error("Upload failed: " + (d.error?.message || "Cloudinary error"));
                     videoUrl = d.secure_url;
                 }
 

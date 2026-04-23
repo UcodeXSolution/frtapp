@@ -192,7 +192,7 @@
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     const token = await getToken(messaging, { 
-                        vapidKey: 'BMD_X9-W9S7X7X7X7X7X7X7X7X7X7X7X7X7' // Default public key or personal
+                        vapidKey: 'BGfuiK2HIHQoLWC5hrzlMmqOsEzYjiQeM-6jdJ-yIa7xyFRyjE5KJwi_Qr0x7K2Zx58D9BJ9fmL5mWR8PcBe1ew'
                     });
                     if (token) {
                         console.log("Web FCM Token:", token);

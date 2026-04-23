@@ -962,8 +962,27 @@
         /* Auth Nav Styles */
         #auth-links { display: flex; align-items: center; gap: 1rem; }
         .user-name { color: var(--secondary); font-weight: bold; font-size: 0.9rem; }
-        .login-btn-nav { cursor: pointer; color: white !important; border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; transition: 0.3s; text-decoration: none; font-size: 0.9rem; }
-        .login-btn-nav:hover { background: var(--primary); }
+        .login-btn-nav { 
+            background: linear-gradient(45deg, var(--primary), #6A1FD0);
+            cursor: pointer; 
+            color: white !important; 
+            padding: 0.7rem 1.5rem; 
+            border-radius: 50px; 
+            transition: all 0.3s ease; 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+        }
+        .login-btn-nav:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+            border-color: var(--secondary);
+        }
+
 
         /* Auth Modals */
         .modal-overlay {
@@ -1032,7 +1051,7 @@
             <div id="auth-links">
                 <!-- Injected by JS -->
                 <a href="javascript:void(0)" onclick="openLogin()" class="login-btn-nav">Login</a>
-                <a href="register.html" class="login-btn-nav" style="background: var(--primary)">Register</a>
+                <a href="register.html" class="login-btn-nav">Register</a>
             </div>
             <a href="#download" class="download-btn pulse"><i class="fas fa-download"></i> Download</a>
 

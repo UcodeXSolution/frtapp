@@ -39,6 +39,7 @@
         </div>
 
         <div id="error-toast" class="hidden mt-4 p-3 bg-red-500/20 border border-red-500 text-red-200 text-xs rounded-lg text-center"></div>
+        <div id="debug-info" class="mt-4 p-2 text-[10px] text-gray-500 break-all overflow-hidden hidden"></div>
     </div>
 
     <!-- Firebase SDKs -->
@@ -47,34 +48,34 @@
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Firebase Configuration - SAME AS YOUR MOBILE APP
+        // Updated Config from Workspace Files
         const firebaseConfig = {
-            // PLEASE REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
-            apiKey: "REPLACE_ME",
-            authDomain: "REPLACE_ME",
-            projectId: "REPLACE_ME",
-            storageBucket: "REPLACE_ME",
-            messagingSenderId: "REPLACE_ME",
-            appId: "REPLACE_ME"
+            apiKey: "AIzaSyCmtV4tRTpCCgFZIVxGsW2lLiExZsTIOR4",
+            authDomain: "frtapp-ff79b.firebaseapp.com",
+            projectId: "frtapp-ff79b",
+            storageBucket: "frtapp-ff79b.firebasestorage.app",
+            messagingSenderId: "1060214465512",
+            // Use iOS ID as a placeholder, though Web should have its own. 
+            // In many projects, any valid AppID in the project works for read/write if rules allow.
+            appId: "1:1060214465512:ios:377eddb6c315792a43ba5d" 
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // UI Logic
         const btnLogin = document.getElementById('btn-login');
         const errorToast = document.getElementById('error-toast');
+        const debugInfo = document.getElementById('debug-info');
 
         btnLogin.onclick = async () => {
-            const mobile = document.getElementById('login-mobile').value;
-            const password = document.getElementById('login-password').value;
+            const mobile = document.getElementById('login-mobile').value.trim();
+            const password = document.getElementById('login-password').value.trim();
 
             if (!mobile || !password) return showErr("Please enter all fields");
 
             toggleLoad(true);
 
-            // Admin Shortcut (Same as App)
             if (mobile === '0771246939' && password === 'Admin123@j') {
                 localStorage.setItem('isAdmin', 'true');
                 window.location.href = 'admin.html';
@@ -82,8 +83,13 @@
             }
 
             try {
-                // Anonymous auth just to access Firestore if security rules require it
-                await signInAnonymously(auth);
+                // Ensure Anonymous Auth is enabled in Firebase Console!
+                try {
+                    await signInAnonymously(auth);
+                } catch (authError) {
+                    console.error("Auth Error:", authError);
+                    // Continue anyway, maybe rules are public (unlikely but worth a shot)
+                }
 
                 const userDoc = await getDoc(doc(db, "users", mobile));
                 
@@ -97,11 +103,13 @@
                         showErr("Incorrect password");
                     }
                 } else {
-                    showErr("User not found");
+                    showErr("User not found (" + mobile + ")");
                 }
             } catch (e) {
-                showErr("Error connecting to server");
+                showErr("Connection Error: " + (e.code || e.message));
                 console.error(e);
+                debugInfo.innerText = "Debug: " + e.message;
+                debugInfo.classList.remove('hidden');
             } finally {
                 toggleLoad(false);
             }
@@ -110,7 +118,7 @@
         function showErr(msg) {
             errorToast.innerText = msg;
             errorToast.classList.remove('hidden');
-            setTimeout(() => errorToast.classList.add('hidden'), 3000);
+            setTimeout(() => errorToast.classList.add('hidden'), 5000);
         }
 
         function toggleLoad(isLoading) {

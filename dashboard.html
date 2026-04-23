@@ -20,7 +20,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Profile Info -->
             <div class="md:col-span-1 space-y-6">
                 <div class="card p-6 text-center">
                     <img id="user-pfp" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-cyan-400/20 object-cover">
@@ -37,11 +36,9 @@
                 <a href="delete.html" class="block w-full py-4 text-center text-red-400 text-sm hover:underline">Request Account Deletion</a>
             </div>
 
-            <!-- Management Section -->
             <div class="md:col-span-2 space-y-6">
                 <div id="renewal-card" class="card p-8 hidden">
                     <h3 class="text-xl font-bold mb-4">Renew Subscription</h3>
-                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Your premium access has expired or is awaiting payment. Please pay LKR 350 to the account below and upload your receipt.</p>
                     
                     <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 mb-8 space-y-3">
                         <div class="flex justify-between text-sm"><span class="text-slate-500">Account Name:</span> <span id="bank-name" class="font-semibold text-cyan-200">--</span></div>
@@ -68,9 +65,6 @@
                             <p class="text-slate-400 text-sm italic">You can now use all features in the Mobile App.</p>
                         </div>
                     </div>
-                    <div class="bg-cyan-500/5 p-6 rounded-2xl border border-cyan-500/20">
-                        <p class="text-sm text-cyan-200/80 leading-relaxed">Your subscription is active. You will be notified via the web dashboard when it's time to renew. Stay safe!</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -79,6 +73,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const userId = localStorage.getItem('userId');
         if (!userId) window.location.href = 'index.html';
@@ -89,13 +84,16 @@
             projectId: "frtapp-ff79b",
             storageBucket: "frtapp-ff79b.firebasestorage.app",
             messagingSenderId: "1060214465512",
-            appId: "1:1060214465512:web:your_web_app_id_here"
+            appId: "1:1060214465512:ios:377eddb6c315792a43ba5d"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // --- Fetch Profile ---
+        // Pre-auth 
+        try { await signInAnonymously(auth); } catch(e) {}
+
         onSnapshot(doc(db, "users", userId), (snap) => {
             if (!snap.exists()) return;
             const u = snap.data();
@@ -107,18 +105,16 @@
             const subStatus = document.getElementById('sub-status');
             const subExpiry = document.getElementById('sub-expiry');
 
-            // Membership Logic
             const now = new Date();
             const expiry = u.subscriptionExpiry?.toDate();
             const isActive = u.isAppUnlocked && expiry && expiry > now;
 
             if (isActive) {
-                statusCard.classList.replace('border-l-orange-500', 'border-l-cyan-500');
+                statusCard.classList.remove('border-l-orange-500');
                 statusCard.classList.add('border-l-cyan-500');
                 subStatus.innerText = 'Premium Active';
                 subStatus.className = 'text-xl font-bold text-cyan-400';
                 subExpiry.innerText = `Expires on ${expiry.toLocaleDateString()}`;
-                
                 document.getElementById('active-card').classList.remove('hidden');
                 document.getElementById('renewal-card').classList.add('hidden');
             } else {
@@ -126,13 +122,14 @@
                 subStatus.innerText = u.paymentStatus === 'pending' ? 'Activation Pending' : 'Lapsed / Inactive';
                 subStatus.className = 'text-xl font-bold text-orange-400';
                 subExpiry.innerText = u.paymentStatus === 'pending' ? 'Admin is reviewing your slip' : 'Renewal required';
-                
                 document.getElementById('active-card').classList.add('hidden');
                 document.getElementById('renewal-card').classList.remove('hidden');
             }
+        }, (err) => {
+            console.error("Snapshot Error:", err);
+            if (err.code === 'permission-denied') alert("Firestore Permission Denied. Check your Security Rules.");
         });
 
-        // --- Fetch Bank Info ---
         const bankSnap = await getDoc(doc(db, "settings", "bankDetails"));
         if(bankSnap.exists()) {
             const b = bankSnap.data();
@@ -141,18 +138,12 @@
             document.getElementById('bank-acc').innerText = b.accountNumber;
         }
 
-        // --- Renewal Logic ---
         const btnRenew = document.getElementById('btn-renew');
         btnRenew.onclick = async () => {
             const file = document.getElementById('slip-input').files[0];
-            if (!file) return alert("Please select your payment slip image");
-
-            document.getElementById('renew-text').classList.add('hidden');
-            document.getElementById('renew-loader').classList.remove('hidden');
-            btnRenew.disabled = true;
-
+            if (!file) return alert("Select slip");
+            toggleRenewLoad(true);
             try {
-                // Cloudinary upload
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', 'ml_default');
@@ -161,22 +152,24 @@
                     body: formData
                 });
                 const cloudData = await cloudResp.json();
-
                 await updateDoc(doc(db, "users", userId), {
                     paymentSlipUrl: cloudData.secure_url,
                     paymentStatus: 'pending',
                     lastPaymentRequestedAt: serverTimestamp()
                 });
-
-                alert("Slip uploaded! Admin will approve shortly.");
+                alert("Uploaded!");
             } catch (e) {
-                alert("Upload failed. Try again.");
+                alert("Error: " + e.message);
             } finally {
-                document.getElementById('renew-text').classList.remove('hidden');
-                document.getElementById('renew-loader').classList.add('hidden');
-                btnRenew.disabled = false;
+                toggleRenewLoad(false);
             }
         };
+
+        function toggleRenewLoad(l) {
+            document.getElementById('renew-text').classList.toggle('hidden', l);
+            document.getElementById('renew-loader').classList.toggle('hidden', !l);
+            btnRenew.disabled = l;
+        }
 
         window.logout = () => { localStorage.clear(); window.location.href = 'index.html'; };
     </script>

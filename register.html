@@ -9,8 +9,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #0F2027; background: linear-gradient(to right, #2C5364, #203A43, #0F2027); min-height: 100vh; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-group input { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-group input:focus { border-color: #22d3ee; }
     </style>
 </head>
 <body class="flex items-center justify-center p-6 py-12">
@@ -21,7 +19,6 @@
         </div>
 
         <div class="space-y-5">
-            <!-- Profile Pic Section -->
             <div class="flex flex-col items-center mb-6">
                 <div class="w-24 h-24 rounded-full border-2 border-cyan-400/30 overflow-hidden bg-white/5 relative group cursor-pointer" onclick="document.getElementById('profile-input').click()">
                     <img id="profile-preview" class="w-full h-full object-cover hidden">
@@ -29,40 +26,33 @@
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Tap to upload profile picture</p>
                 <input type="file" id="profile-input" class="hidden" accept="image/*">
             </div>
 
-            <div class="input-group">
-                <label class="block text-xs font-bold mb-1 text-cyan-400/80 tracking-wider">FULL NAME</label>
-                <input type="text" id="reg-name" placeholder="John Doe" class="w-full rounded-xl px-4 py-3 text-white outline-none transition-all">
+            <div>
+                <label class="block text-xs font-bold mb-1 text-cyan-400/80">FULL NAME</label>
+                <input type="text" id="reg-name" placeholder="John Doe" class="w-full bg-white/10 rounded-xl px-4 py-3 outline-none border border-white/10 focus:border-cyan-400">
             </div>
 
-            <div class="input-group">
-                <label class="block text-xs font-bold mb-1 text-cyan-400/80 tracking-wider">MOBILE NUMBER</label>
-                <input type="text" id="reg-mobile" placeholder="077xxxxxxx" class="w-full rounded-xl px-4 py-3 text-white outline-none transition-all">
+            <div>
+                <label class="block text-xs font-bold mb-1 text-cyan-400/80">MOBILE NUMBER</label>
+                <input type="text" id="reg-mobile" placeholder="077xxxxxxx" class="w-full bg-white/10 rounded-xl px-4 py-3 outline-none border border-white/10 focus:border-cyan-400">
             </div>
 
-            <div class="input-group">
-                <label class="block text-xs font-bold mb-1 text-cyan-400/80 tracking-wider">SET PASSWORD</label>
-                <input type="password" id="reg-password" placeholder="••••••••" class="w-full rounded-xl px-4 py-3 text-white outline-none transition-all">
+            <div>
+                <label class="block text-xs font-bold mb-1 text-cyan-400/80">PASSWORD</label>
+                <input type="password" id="reg-password" placeholder="••••••••" class="w-full bg-white/10 rounded-xl px-4 py-3 outline-none border border-white/10 focus:border-cyan-400">
             </div>
 
             <div class="flex items-start mt-4">
-                <input type="checkbox" id="privacy-check" class="mt-1 w-4 h-4 rounded border-gray-300 text-cyan-500 focus:ring-cyan-500">
-                <label class="ml-3 text-sm text-gray-400">
-                    I accept the <a href="#" class="text-cyan-400 hover:underline">Privacy Policy</a> and agree that my location is shared with authorized family members only.
-                </label>
+                <input type="checkbox" id="privacy-check" class="mt-1">
+                <label class="ml-2 text-sm text-gray-400">Accept Privacy Policy</label>
             </div>
             
-            <button id="btn-register" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-cyan-500/20 mt-4 flex items-center justify-center h-14">
+            <button id="btn-register" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-4 rounded-2xl transition-all h-14 flex items-center justify-center">
                 <span id="reg-text">Create Account</span>
                 <div id="reg-loader" class="hidden animate-spin rounded-full h-6 w-6 border-2 border-white/30 border-t-white"></div>
             </button>
-
-            <div class="text-center mt-6">
-                <p class="text-gray-400 text-sm">Already have an account? <a href="index.html" class="text-cyan-400 hover:underline font-semibold">Login here</a></p>
-            </div>
         </div>
 
         <div id="error-toast" class="hidden mt-4 p-3 bg-red-500/20 border border-red-500 text-red-200 text-xs rounded-lg text-center"></div>
@@ -79,7 +69,7 @@
             projectId: "frtapp-ff79b",
             storageBucket: "frtapp-ff79b.firebasestorage.app",
             messagingSenderId: "1060214465512",
-            appId: "1:1060214465512:web:your_web_app_id_here" // NOTE: Need to create a Web App in Firebase Console
+            appId: "1:1060214465512:ios:377eddb6c315792a43ba5d"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -92,7 +82,6 @@
         const profilePlaceholder = document.getElementById('profile-placeholder');
         const errorToast = document.getElementById('error-toast');
 
-        // Image Preview
         profileInput.onchange = e => {
             const file = e.target.files[0];
             if (file) {
@@ -107,25 +96,25 @@
         };
 
         btnReg.onclick = async () => {
-            const name = document.getElementById('reg-name').value;
-            const mobile = document.getElementById('reg-mobile').value;
-            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value.trim();
+            const mobile = document.getElementById('reg-mobile').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
             const privacyChecked = document.getElementById('privacy-check').checked;
             const file = profileInput.files[0];
 
-            if (!name || !mobile || !password || !file) return showErr("Please fill all fields and select profile picture");
-            if (!privacyChecked) return showErr("Please accept the Privacy Policy");
+            if (!name || !mobile || !password || !file) return showErr("Fill all fields and photo");
+            if (!privacyChecked) return showErr("Accept Privacy Policy");
 
             toggleLoad(true);
 
             try {
-                await signInAnonymously(auth);
+                try {
+                    await signInAnonymously(auth);
+                } catch(e) { console.error("Auth:", e); }
 
-                // Check existence
                 const existing = await getDoc(doc(db, "users", mobile));
-                if (existing.exists()) return showErr("Mobile number already registered");
+                if (existing.exists()) return showErr("Already registered");
 
-                // Upload to Cloudinary
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', 'ml_default');
@@ -135,9 +124,8 @@
                     body: formData
                 });
                 const cloudData = await cloudResp.json();
-                if (!cloudData.secure_url) throw new Error("Image upload failed");
+                if (!cloudData.secure_url) throw new Error("Cloudinary Error: " + (cloudData.error?.message || "Unknown"));
 
-                // Save to Firestore
                 await setDoc(doc(db, "users", mobile), {
                     name,
                     mobile,
@@ -155,7 +143,7 @@
                 window.location.href = 'dashboard.html';
 
             } catch (e) {
-                showErr("Registration failed. Please try again.");
+                showErr("Error: " + (e.code || e.message));
                 console.error(e);
             } finally {
                 toggleLoad(false);
@@ -165,7 +153,7 @@
         function showErr(msg) {
             errorToast.innerText = msg;
             errorToast.classList.remove('hidden');
-            setTimeout(() => errorToast.classList.add('hidden'), 3000);
+            setTimeout(() => errorToast.classList.add('hidden'), 5000);
         }
 
         function toggleLoad(isLoading) {

@@ -958,6 +958,63 @@
 
     </style>
    
+    <style>
+        /* Auth Nav Styles */
+        #auth-links { display: flex; align-items: center; gap: 1rem; }
+        .user-name { color: var(--secondary); font-weight: bold; font-size: 0.9rem; }
+        .login-btn-nav { cursor: pointer; color: white !important; border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; transition: 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .login-btn-nav:hover { background: var(--primary); }
+
+        /* Auth Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .modal-card {
+            background: #111;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid #333;
+            color: white;
+            position: relative;
+        }
+        .modal-close { position: absolute; top: 15px; right: 20px; color: #666; cursor: pointer; font-size: 1.5rem; }
+        .modal-input { width: 100%; background: #222; border: 1px solid #333; border-radius: 12px; padding: 12px; color: white; margin-bottom: 15px; outline: none; }
+        .modal-input:focus { border-color: var(--primary); }
+        .modal-btn { width: 100%; background: var(--primary); color: white; font-weight: bold; padding: 12px; border-radius: 12px; transition: 0.3s; cursor: pointer; }
+        .modal-btn:hover { background: #6A1FD0; }
+
+        #dash-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .dash-content {
+            background: #111;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid #333;
+            color: white;
+            position: relative;
+        }
+    </style>
 </head>
 
 <body>
@@ -972,10 +1029,39 @@
             <a href="#features">Features</a>
             <a href="#app-demo">App Demo</a>
             <a href="#testimonials">Testimonials</a>
+            <div id="auth-links">
+                <!-- Injected by JS -->
+                <a href="javascript:void(0)" onclick="openLogin()" class="login-btn-nav">Login</a>
+                <a href="register.html" class="login-btn-nav" style="background: var(--primary)">Register</a>
+            </div>
             <a href="#download" class="download-btn pulse"><i class="fas fa-download"></i> Download</a>
 
         </div>
     </nav>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closeLogin()">&times;</span>
+            <h2 class="text-2xl font-bold mb-6 text-center text-white">Login to FRT</h2>
+            <input type="text" id="log-mobile" placeholder="Mobile Number" class="modal-input">
+            <input type="password" id="log-pass" placeholder="Password" class="modal-input">
+            <button onclick="handleLogin()" class="modal-btn" id="btn-modal-login">Login</button>
+            <p class="text-center text-xs mt-4 text-gray-400">Don't have an account? <a href="register.html" class="text-secondary">Register here</a></p>
+            <div id="modal-err" class="text-red-500 text-[10px] mt-2 text-center hidden"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div id="dash-modal">
+        <div class="dash-content">
+            <span class="modal-close" onclick="closeDash()">&times;</span>
+            <h2 class="text-2xl font-bold text-secondary mb-6">User Dashboard</h2>
+            <div id="dash-body" class="space-y-6">
+                <div class="text-gray-400">Loading your profile...</div>
+            </div>
+        </div>
+    </div>
 
 <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1447,6 +1533,103 @@ window.addEventListener('scroll', function() {
             }
         });
     </script>
-</body>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmtV4tRTpCCgFZIVxGsW2lLiExZsTIOR4",
+            authDomain: "frtapp-ff79b.firebaseapp.com",
+            projectId: "frtapp-ff79b",
+            storageBucket: "frtapp-ff79b.firebasestorage.app",
+            messagingSenderId: "1060214465512",
+            appId: "1:1060214465512:ios:377eddb6c315792a43ba5d"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const authLinks = document.getElementById('auth-links');
+        const userId = localStorage.getItem('userId');
+
+        if (userId) {
+            try { signInAnonymously(auth); } catch(e) {}
+            onSnapshot(doc(db, "users", userId), (snap) => {
+                if (snap.exists()) renderAuth(snap.data());
+            });
+        }
+
+        function renderAuth(user) {
+            authLinks.innerHTML = `
+                <span class="user-name">Hi, ${user.name.split(' ')[0]}</span>
+                <a href="javascript:void(0)" onclick="openDash()" class="login-btn-nav">Dashboard</a>
+                <a href="javascript:void(0)" onclick="localStorage.clear(); location.reload();" class="text-white text-xs opacity-50 underline ml-2">Logout</a>
+            `;
+        }
+
+        window.openLogin = () => document.getElementById('login-modal').style.display = 'flex';
+        window.closeLogin = () => document.getElementById('login-modal').style.display = 'none';
+
+        window.handleLogin = async () => {
+            const mobile = document.getElementById('log-mobile').value.trim();
+            const password = document.getElementById('log-pass').value.trim();
+            const errDiv = document.getElementById('modal-err');
+            if(!mobile || !password) return;
+            try {
+                if (mobile === '0771246939' && password === 'Admin123@j') {
+                    localStorage.setItem('isAdmin', 'true');
+                    window.location.href = 'admin.html';
+                    return;
+                }
+                await signInAnonymously(auth);
+                const userDoc = await getDoc(doc(db, "users", mobile));
+                if (userDoc.exists() && userDoc.data().password === password) {
+                    localStorage.setItem('userId', mobile);
+                    location.reload();
+                } else {
+                    errDiv.innerText = "Invalid credentials";
+                    errDiv.classList.remove('hidden');
+                }
+            } catch(e) {
+                errDiv.innerText = "Error: " + e.message;
+                errDiv.classList.remove('hidden');
+            }
+        };
+
+        window.openDash = async () => {
+            document.getElementById('dash-modal').style.display = 'flex';
+            const dashBody = document.getElementById('dash-body');
+            const snap = await getDoc(doc(db, "users", userId));
+            if (snap.exists()) {
+                const u = snap.data();
+                const now = new Date();
+                const expiry = u.subscriptionExpiry?.toDate();
+                const isActive = u.isAppUnlocked && expiry && expiry > now;
+                dashBody.innerHTML = `
+                    <div class="flex items-center space-x-4 mb-6 border-b border-white/10 pb-4">
+                        <img src="${u.profilePicture}" class="w-16 h-16 rounded-full border border-secondary/30">
+                        <div>
+                            <p class="font-bold text-lg text-white">${u.name}</p>
+                            <p class="text-sm text-gray-500">${u.mobile}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl ${isActive ? 'bg-cyan-500/10 border border-cyan-500/20' : 'bg-orange-500/10 border border-orange-500/20'}">
+                        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Status</p>
+                        <p class="text-lg font-bold ${isActive ? 'text-cyan-400' : 'text-orange-400'}">${isActive ? 'Premium Active' : 'Payment Required'}</p>
+                        <p class="text-xs text-gray-500 mt-1">${isActive ? 'Expires: ' + expiry.toLocaleDateString() : 'Visit dashboard to renew'}</p>
+                    </div>
+                    <div class="pt-6 flex flex-col gap-3">
+                        <a href="dashboard.html" class="w-full py-3 bg-secondary text-black text-center font-bold rounded-xl">Full Dashboard View</a>
+                        <a href="delete.html" class="w-full py-3 border border-red-500/30 text-red-500 text-center font-bold rounded-xl text-sm opacity-50 hover:opacity-100 transition-all">Delete Account</a>
+                    </div>
+                `;
+            }
+        };
+
+        window.closeDash = () => document.getElementById('dash-modal').style.display = 'none';
+        
+    </script>
+</body>
 </html>

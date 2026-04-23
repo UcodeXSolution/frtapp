@@ -158,7 +158,7 @@
                     const formData = new FormData();
                     formData.append('file', file);
                     formData.append('upload_preset', 'ml_default');
-                    const resp = await fetch('https://api.cloudinary.com/v1_1/dz86er6fe/image/upload', {
+                    const resp = await fetch('https://api.cloudinary.com/v1_1/dz86er6fe/video/upload', {
                         method: 'POST',
                         body: formData
                     });

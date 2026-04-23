@@ -48,6 +48,12 @@
                 <input type="password" id="reg-password" placeholder="••••••••" class="w-full bg-white/10 rounded-xl px-4 py-3 outline-none border border-white/10 focus:border-cyan-400">
             </div>
 
+            <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl">
+                <label class="block text-xs font-bold mb-2 text-yellow-400">DO YOU HAVE FREE PROMO CODE?</label>
+                <input type="text" id="reg-promo" placeholder="ENTER CODE HERE" class="w-full bg-white/5 rounded-xl px-4 py-3 outline-none border border-yellow-500/20 focus:border-yellow-400 text-yellow-100 placeholder:text-yellow-900/50 font-mono tracking-widest text-center">
+                <p class="text-[10px] text-yellow-500/60 mt-2 text-center">Use it here to activate your free account valid for 1 month</p>
+            </div>
+
             <div class="flex items-start mt-4">
                 <input type="checkbox" id="privacy-check" class="mt-1">
                 <label class="ml-2 text-sm text-gray-400">Accept Privacy Policy</label>
@@ -64,7 +70,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -130,17 +136,48 @@
                 const cloudData = await cloudResp.json();
                 if (!cloudData.secure_url) throw new Error("Cloudinary Error: " + (cloudData.error?.message || "Unknown"));
 
+                const promoCode = document.getElementById('reg-promo').value.trim().toUpperCase();
+                let isUnlocked = false;
+                let expiry = null;
+
+                if (promoCode) {
+                    const q = query(collection(db, "users"), where("promoCode", "==", promoCode));
+                    const qSnap = await getDocs(q);
+                    
+                    if (qSnap.empty) {
+                        return showErr("Invalid Promo Code");
+                    }
+                    
+                    const promoUserDoc = qSnap.docs[0];
+                    const promoData = promoUserDoc.data();
+                    
+                    if (promoData.isPromoCodeUsed) {
+                        return showErr("This Promo Code has already been used");
+                    }
+                    
+                    // Valid!
+                    isUnlocked = true;
+                    expiry = new Date();
+                    expiry.setMonth(expiry.getMonth() + 1);
+                    
+                    // Mark as used
+                    await updateDoc(doc(db, "users", promoUserDoc.id), {
+                        isPromoCodeUsed: true
+                    });
+                }
+
                 await setDoc(doc(db, "users", mobile), {
                     name,
                     mobile,
                     password,
                     profilePicture: cloudData.secure_url,
                     timestamp: serverTimestamp(),
-                    isAppUnlocked: false,
-                    paymentStatus: 'pending_payment',
-                    generatedPromoCode: '',
+                    isAppUnlocked: isUnlocked,
+                    paymentStatus: isUnlocked ? 'approved' : 'pending_payment',
+                    promoCode: '', // This user will get their own code later after manual approval if they pay? Or maybe auto-gen?
                     isPromoCodeUsed: false,
-                    isFirstLoginAfterApprove: false
+                    isFirstLoginAfterApprove: isUnlocked,
+                    subscriptionExpiry: expiry
                 });
 
                 localStorage.setItem('userId', mobile);

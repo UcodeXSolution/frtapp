@@ -140,7 +140,7 @@
                         <div class="flex flex-col justify-center space-y-6">
                             <div class="relative group">
                                 <input type="file" id="slip-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
-                                <div class="bg-cyan-500/5 border-2 border-dashed border-cyan-500/20 rounded-3xl p-10 text-center group-hover:bg-cyan-500/10 group-hover:border-cyan-500/40 transition-all">
+                                <div class="bg-cyan-500/5 border-2 border-dashed border-cyan-500/20 rounded-3xl p-10 text-center group-hover:bg-cyan-500/10 group-hover:border-cyan-500/40 transition-all relative" title="Upload your payment slip screenshot here / මෙතැනින් ඔබගේ ගෙවීම් රිසිට්පත Upload කරන්න">
                                     <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-cyan-400">
                                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     </div>
@@ -153,6 +153,44 @@
                                 <span id="renew-text" class="uppercase tracking-[0.15em]">Submit Activation</span>
                                 <div id="renew-loader" class="hidden animate-spin rounded-full h-7 w-7 border-4 border-slate-900/30 border-t-slate-900"></div>
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Instructions Box -->
+                    <div class="mt-12 p-8 rounded-[2.5rem] bg-gradient-to-br from-cyan-500/5 to-purple-500/5 border border-white/5 space-y-8">
+                        <div class="text-center space-y-2">
+                             <h4 class="text-cyan-400 font-bold text-lg">ගිණුම සක්‍රීය කරගැනීමට උපදෙස් / Activation Instructions</h4>
+                             <p class="text-slate-400 text-sm">බැංකු ගිණුමට මුදල් තැන්පත් කර, රිසිට්පත (Slip) මෙහි Upload කරන්න / Transfer money and upload the slip here.</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 text-[13px] leading-relaxed">
+                            <!-- Sinhala Points -->
+                            <div class="space-y-4 bg-white/5 p-6 rounded-3xl border border-white/5">
+                                <ul class="space-y-3 text-slate-300 list-disc pl-4 marker:text-cyan-500">
+                                    <li>මුදල ගෙවූ පසු රිසිට්පත පරීක්ෂා කර ඔබගේ ගිණුම <b>පැය 24ක්</b> ඇතුළත සක්‍රීය කරනු ලැබේ.</li>
+                                    <li>මෙම රු. 350 වලංගු වන්නේ ගෙවූ දින සිට <b>මාසයක කාලයක්</b> සඳහා පමණි.</li>
+                                    <li>Notification Allow කිරීමෙන් ඔබගේ දායකත්වය අවසන් වීමට ඇති දින ගණන දුරකථනයටම ලබාගත හැක.</li>
+                                    <li>සෑම රු. 350ක් සඳහාම තවත් දුරකථනයක් සඳහා <b>නොමිලේ ප්‍රෝමෝ කේතයක් (Free Promo Code)</b> හිමිවේ.</li>
+                                    <li>ගිණුම සක්‍රීය වූ පසු ඇප් එකේ Profile Icon එක ක්ලික් කිරීමෙන් මෙම කේතය ලබාගත හැක.</li>
+                                    <li>ඇප් එක Setup කිරීමට <b>www.lankafrt.com</b> හි "App Demo" බොත්තම හෝ ඇප් එකේ වීඩියෝව බලන්න.</li>
+                                </ul>
+                            </div>
+
+                            <!-- English Points -->
+                            <div class="space-y-4 bg-white/5 p-6 rounded-3xl border border-white/5">
+                                <ul class="space-y-3 text-slate-300 list-disc pl-4 marker:text-purple-500">
+                                    <li>Your account will be activated within <b>24 hours</b> after verification of the payment slip.</li>
+                                    <li>The Rs. 350 fee is valid for <b>exactly one month</b> from the payment date.</li>
+                                    <li>Allow notifications to receive subscription expiry alerts directly on your device.</li>
+                                    <li>Every Rs. 350 payment includes a <b>Free Promo Code</b> to track a second device for one month.</li>
+                                    <li>Access the promo code in the app by clicking the Profile Icon after activation.</li>
+                                    <li>Visit <b>www.lankafrt.com</b> (App Demo) or watch the in-app video for setup guidance.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center pt-4">
+                            <p class="text-cyan-400 font-bold text-sm italic">Thank you for choosing Family Road Track (FRT)!</p>
                         </div>
                     </div>
                 </div>

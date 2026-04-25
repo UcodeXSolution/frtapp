@@ -89,7 +89,7 @@
             display: none;
             background: none;
             border: none;
-            color: var(--light);
+            color: white; /* Changed from var(--light) to white for visibility */
             font-size: 1.5rem;
             cursor: pointer;
         }
@@ -850,6 +850,11 @@
             .nav-links.active {
                 right: 0;
             }
+            .nav-links a {
+                color: var(--light) !important; /* Make links dark on mobile sidebar */
+                margin: 1rem 0;
+                width: 100%;
+            }
             .nav-links a::after {
                 bottom: -2px;
             }
@@ -1135,11 +1140,11 @@
     </div>
 </a>
 
-<a href=" " class="store-btn" download="FRT.ipa">
+<a href="https://apps.apple.com/lk/app/family-road-track/id6762445710" class="store-btn">
     <i class="fab fa-apple"></i>
     <div>
         <span>GET IT ON</span>
-        <strong>IOS</strong>
+        <strong>APP STORE</strong>
     </div>
 </a>
 
@@ -1384,11 +1389,11 @@
     </div>
 </a>
 
-<a href=" " class="store-btn" download="FRT.ipa">
+<a href="https://apps.apple.com/lk/app/family-road-track/id6762445710" class="store-btn">
     <i class="fab fa-apple"></i>
     <div>
         <span>GET IT ON</span>
-        <strong>IOS</strong>
+        <strong>APP STORE</strong>
     </div>
 </a>
 
